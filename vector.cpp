@@ -20,17 +20,18 @@ namespace AdvanceCpp
 
     constexpr int DEFAULT_CAPACITY = 20;
 
+    template <typename T>
     class DynamicArray
     {
     private:
         /*note: C++ initializes members in declaration order, not the order they appear in the initializer list*/
         int _size;
         int _capacity;
-        int *_p;
+        T *_p;
 
     public:
         /* default constructor */
-        DynamicArray() : _size(0), _capacity(DEFAULT_CAPACITY), _p(new int[DEFAULT_CAPACITY])
+        DynamicArray() : _size(0), _capacity(DEFAULT_CAPACITY), _p(new T[DEFAULT_CAPACITY])
         {
             for (int i = 0; i < DEFAULT_CAPACITY; i++)
             {
@@ -44,7 +45,7 @@ namespace AdvanceCpp
             instead of giving an error or waring
         */
 
-        explicit DynamicArray(const int sz) : _size(sz), _capacity(sz), _p(new int[_capacity])
+        explicit DynamicArray(const int sz) : _size(sz), _capacity(sz), _p(new T[_capacity])
         {
             for (int i = 0; i < _capacity; i++)
             {
@@ -52,7 +53,7 @@ namespace AdvanceCpp
             }
         }
 
-        DynamicArray(const int sz, const int val) : _size(sz), _capacity(sz), _p(new int[_capacity])
+        DynamicArray(const int sz, const T val) : _size(sz), _capacity(sz), _p(new T[_capacity])
         {
             for (int i = 0; i < _capacity; i++)
             {
@@ -62,13 +63,13 @@ namespace AdvanceCpp
                 }
                 else
                 {
-                    _p[i] = 0;
+                    _p[i] = nullptr;
                 }
             }
         }
 
         /* copy constructor */
-        DynamicArray(const DynamicArray &other) : _size(other._size), _capacity(other._capacity), _p(new int[_capacity])
+        DynamicArray(const DynamicArray &other) : _size(other._size), _capacity(other._capacity), _p(new T[_capacity])
         {
             for (int i = 0; i < _capacity; i++)
             {
@@ -93,7 +94,7 @@ namespace AdvanceCpp
             return *this;
         }
 
-        /* Move constructor 
+        /* Move constructor
         && tell compiler that it's safe to steal the object as it's going to be deleted otherwise*/
         DynamicArray(DynamicArray &&other) noexcept
         {
@@ -126,12 +127,12 @@ namespace AdvanceCpp
             delete[] _p;
         }
 
-        void push_back(int val)
+        void push_back(T val)
         {
             if (_size >= _capacity)
             {
                 _capacity = _capacity * 2;
-                int *p = new int[_capacity];
+                T *p = new T[_capacity];
                 for (int i = 0; i < _size; i++)
                 {
                     p[i] = _p[i];
@@ -142,7 +143,7 @@ namespace AdvanceCpp
             _p[_size++] = val;
         }
 
-        int pop_back()
+        T pop_back()
         {
             if (_size == 0)
             {
@@ -156,7 +157,7 @@ namespace AdvanceCpp
             return _size == 0;
         }
 
-        int at(int index) const
+        T at(int index) const
         {
             if (index < 0 || index >= _size)
             {
@@ -165,7 +166,7 @@ namespace AdvanceCpp
             return _p[index];
         }
 
-        bool contains(int val) const
+        bool contains(T val) const
         {
             for (int i = 0; i < _size; i++)
             {
@@ -184,7 +185,7 @@ namespace AdvanceCpp
         {
             if (_capacity >= space)
                 return;
-            int *p = new int[space];
+            T *p = new T[space];
             for (int i = 0; i < _size; i++)
             {
                 p[i] = _p[i];
@@ -205,7 +206,7 @@ namespace AdvanceCpp
         }
 
         /*note: [] operator needs a value i.e. index*/
-        const int &operator[](const int index) const
+        const T &operator[](const int index) const
         {
             if (index < 0 || index >= _size)
             {
@@ -214,7 +215,7 @@ namespace AdvanceCpp
             return _p[index];
         }
 
-        int &operator[](const int index)
+        T &operator[](const int index)
         {
             if (index < 0 || index >= _size)
             {
@@ -223,30 +224,30 @@ namespace AdvanceCpp
             return _p[index];
         }
 
-        int *begin()
+        T *begin()
         {
             return _p;
         }
 
-        const int *cbegin() const
+        const T *cbegin() const
         {
             return _p;
         }
 
-        int *end()
+        T *end()
         {
             return _p + _size;
         }
 
-        const int *cend() const
+        const T *cend() const
         {
             return _p + _size;
         }
 
         void reverse()
         {
-            int *left = _p;
-            int *right = _p + _size - 1;
+            auto *left = _p;
+            auto *right = _p + _size - 1;
             while (left < right)
             {
                 std::swap(*left, *right);
@@ -269,7 +270,7 @@ namespace AdvanceCpp
             if (newK == 0)
                 return;
 
-            const auto swapInRange = [&](int *left, int *right)
+            const auto swapInRange = [&](T *left, T *right)
             {
                 while (left < right)
                 {
@@ -287,11 +288,36 @@ namespace AdvanceCpp
             /*reverse the entire array*/
             this->reverse();
         }
+
+        void print()
+        {
+            cout << "{ ";
+            for (int i = 0; i < _size; i++)
+            {
+                cout << _p[i] << " ";
+            }
+            cout << "}" << endl;
+        }
     };
 
 }
 
 int main()
 {
+    using namespace AdvanceCpp;
+    DynamicArray<int> arr1(10);
+    for (int i = 0; i < 10; i++)
+    {
+        arr1[i] = i;
+    }
+    arr1.print();
+    arr1.rotate(3);
+    arr1.print();
+    arr1.reverse();
+    arr1.print();
+    DynamicArray<string> arr2(10, "val");
+    arr2.print();
+    arr2[3] = "name";
+    cout << arr2.at(3) <<endl;
     return 0;
 }
