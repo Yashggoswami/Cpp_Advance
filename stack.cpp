@@ -1,7 +1,6 @@
 #include <iostream>
 
 using namespace std;
-
 template <typename T>
 class Node
 {
@@ -40,63 +39,68 @@ public:
     }
 };
 
-template <typename T>
-class DStack
+namespace STK
 {
-private:
-    Node<T> *_top;
-    int _size;
 
-public:
-    DStack() : _top(nullptr), _size(0) {};
-    void push(T val)
+    template <typename T>
+    class DStack
     {
-        Node<T> *node = new Node(val);
-        if (_size == 0)
-        {
-            _top = node;
-        }
-        else
-        {
-            _top->next(node);
-            node->prev(_top);
-            _top = node;
-        }
-        _size++;
-    }
-    const T &top()
-    {
-        if (_size == 0)
-        {
-            throw runtime_error("Invalid top(): stack is empty\n");
-        }
-        return _top->val();
-    }
+    private:
+        Node<T> *_top;
+        int _size;
 
-    bool empty()
-    {
-        return _size <= 0;
-    }
-
-    void pop()
-    {
-        if (_size == 0)
-            return;
-        Node<T> *curr = _top;
-        Node<T> *prev = _top->prev();
-        _top = prev;
-        if (_top != nullptr)
+    public:
+        DStack() : _top(nullptr), _size(0) {};
+        void push(T val)
         {
-            _top->next(nullptr);
+            Node<T> *node = new Node(val);
+            if (_size == 0)
+            {
+                _top = node;
+            }
+            else
+            {
+                _top->next(node);
+                node->prev(_top);
+                _top = node;
+            }
+            _size++;
         }
-        delete curr;
-        _size--;
-    }
-};
+        const T &top()
+        {
+            if (_size == 0)
+            {
+                throw runtime_error("Invalid top(): stack is empty\n");
+            }
+            return _top->val();
+        }
 
+        bool empty()
+        {
+            return _size <= 0;
+        }
+
+        void pop()
+        {
+            if (_size == 0)
+                return;
+            Node<T> *curr = _top;
+            Node<T> *prev = _top->prev();
+            _top = prev;
+            if (_top != nullptr)
+            {
+                _top->next(nullptr);
+            }
+            delete curr;
+            _size--;
+        }
+    };
+}
+
+/*
 int main()
 {
-    DStack<int> stack;
+    STK::DStack<int> stack;
     stack.push(10);
     stack.push(12);
     cout << stack.top() << endl;
@@ -117,3 +121,4 @@ int main()
     }
     return 0;
 }
+*/
