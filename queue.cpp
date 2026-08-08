@@ -41,36 +41,38 @@ public:
 };
 
 template <typename T>
-class DStack
+class DQueue
 {
 private:
-    Node<T> *_top;
+    Node<T> *_front;
+    Node<T> *_back;
     int _size;
 
 public:
-    DStack() : _top(nullptr), _size(0) {};
+    DQueue() : _front(nullptr), _back(nullptr), _size(0) {};
     void push(T val)
     {
         Node<T> *node = new Node(val);
         if (_size == 0)
         {
-            _top = node;
+            _back = node;
+            _front = node;
         }
         else
         {
-            _top->next(node);
-            node->prev(_top);
-            _top = node;
+            _back->next(node);
+            node->prev(_back);
+            _back = node;
         }
         _size++;
     }
-    const T &top()
+    const T &front()
     {
         if (_size == 0)
         {
-            throw runtime_error("Invalid top(): stack is empty\n");
+            throw runtime_error("Invalid front(): queue is empty\n");
         }
-        return _top->val();
+        return _front->val();
     }
 
     bool empty()
@@ -82,12 +84,16 @@ public:
     {
         if (_size == 0)
             return;
-        Node<T> *curr = _top;
-        Node<T> *prev = _top->prev();
-        _top = prev;
-        if (_top != nullptr)
+        Node<T> *curr = _front;
+        Node<T> *next = _front->next();
+        _front = next;
+        if (_front != nullptr)
         {
-            _top->next(nullptr);
+            _front->prev(nullptr);
+        }
+        else
+        {
+            _back = nullptr;
         }
         delete curr;
         _size--;
@@ -96,20 +102,20 @@ public:
 
 int main()
 {
-    DStack<int> stack;
-    stack.push(10);
-    stack.push(12);
-    cout << stack.top() << endl;
-    stack.pop();
-    cout << stack.top() << endl;
-    stack.pop();
-    if (stack.empty())
+    DQueue<int> queue;
+    queue.push(10);
+    queue.push(12);
+    cout << queue.front() << endl;
+    queue.pop();
+    cout << queue.front() << endl;
+    queue.pop();
+    if (queue.empty())
     {
-        cout << "stack is empty" << endl;
+        cout << "queue is empty" << endl;
     }
     try
     {
-        stack.top();
+        queue.front();
     }
     catch (runtime_error e)
     {
